@@ -7,5 +7,5 @@ import (
 func main() {
 	logger := yologger.New("sano", "info")
 	logger.Info("failed to fetch URL")
-	defer logger.Sync()
+	// defer logger.Sync()
 }
