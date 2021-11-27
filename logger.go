@@ -35,9 +35,23 @@ func (l *Logger) Info(msg string) *Logger {
 	return l.Write()
 }
 
+func (l *Logger) Warn(msg string) *Logger {
+	l.message = msg
+	l.level = Yellow.Add(WarnLevel.String())
+
+	return l.Write()
+}
+
+func (l *Logger) Error(msg string) *Logger {
+	l.message = msg
+	l.level = Red.Add(ErrorLevel.String())
+
+	return l.Write()
+}
+
 func (l *Logger) Write() *Logger {
 	now := time.Now()
-	log := fmt.Sprintf("%s [%s] %s", now, l.level, l.message)
+	log := fmt.Sprintf("[%s] %s  %s", l.level, now, l.message)
 	_, err := l.buf.WriteString(log)
 	if err != nil {
 		// TODO: エラーハンドリング検討要
