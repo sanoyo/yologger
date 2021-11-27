@@ -3,6 +3,7 @@ package yologger
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"sync"
 )
@@ -10,6 +11,7 @@ import (
 type Logger struct {
 	Name    string
 	message string
+	level   string
 
 	// TODO: 定義する構造体を別で用意する
 	mu     sync.Mutex
@@ -27,14 +29,16 @@ func New(name string, w io.Writer) *Logger {
 	return l
 }
 
-// TODO: fields追加できるようにする
 func (l *Logger) Info(msg string) *Logger {
 	l.message = msg
+	l.level = InfoLevel.String()
+
 	return l.Write()
 }
 
 func (l *Logger) Write() *Logger {
-	_, err := l.buf.WriteString(l.message)
+	log := fmt.Sprintf("%s %s", l.level, l.message)
+	_, err := l.buf.WriteString(log)
 	if err != nil {
 		// TODO: エラーハンドリング検討要
 		panic(err)
@@ -44,9 +48,8 @@ func (l *Logger) Write() *Logger {
 }
 
 func (l *Logger) Out() {
-	// TODO: lockするかどうか検討する
-	// l.mu.Lock()
-	// defer l.mu.Unlock()
+	l.mu.Lock()
+	defer l.mu.Unlock()
 
 	tmp := l.buf.Bytes()
 	l.w.Write(tmp)
