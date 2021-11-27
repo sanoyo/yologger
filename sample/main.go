@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	logger := yologger.New("sano", os.Stdout)
+	logger := yologger.New(os.Stdout)
 	logger.Info("failed to fetch URL").Out()
 }

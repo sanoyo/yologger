@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"time"
 )
 
 type Logger struct {
-	Name    string
 	message string
 	level   string
 
@@ -20,11 +20,10 @@ type Logger struct {
 	buf    *bytes.Buffer
 }
 
-func New(name string, w io.Writer) *Logger {
+func New(w io.Writer) *Logger {
 	l := &Logger{
-		Name: name,
-		w:    w,
-		buf:  &bytes.Buffer{},
+		w:   w,
+		buf: &bytes.Buffer{},
 	}
 	return l
 }
@@ -37,7 +36,8 @@ func (l *Logger) Info(msg string) *Logger {
 }
 
 func (l *Logger) Write() *Logger {
-	log := fmt.Sprintf("%s %s", l.level, l.message)
+	now := time.Now()
+	log := fmt.Sprintf("%s [%s] %s", now, l.level, l.message)
 	_, err := l.buf.WriteString(log)
 	if err != nil {
 		// TODO: エラーハンドリング検討要
