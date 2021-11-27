@@ -30,7 +30,7 @@ func New(w io.Writer) *Logger {
 
 func (l *Logger) Info(msg string) *Logger {
 	l.message = msg
-	l.level = InfoLevel.String()
+	l.level = Green.Add(InfoLevel.String())
 
 	return l.Write()
 }

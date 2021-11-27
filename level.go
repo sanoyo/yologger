@@ -2,7 +2,7 @@ package yologger
 
 import "fmt"
 
-// ref: github.com/sanoyo/zap/level.go
+// ref: https://github.com/uber-go/zap/level.go
 type Level int8
 
 const (
