@@ -2,7 +2,7 @@ package yologger
 
 import (
 	"bufio"
-	"fmt"
+	"bytes"
 	"io"
 	"sync"
 )
@@ -10,44 +10,44 @@ import (
 type Logger struct {
 	Name    string
 	message string
+
 	// TODO: 定義する構造体を別で用意する
 	mu     sync.Mutex
 	writer *bufio.Writer
 	w      io.Writer
+	buf    *bytes.Buffer
 }
 
-func New(name, level string) *Logger {
+func New(name string, w io.Writer) *Logger {
 	l := &Logger{
 		Name: name,
+		w:    w,
+		buf:  &bytes.Buffer{},
 	}
 	return l
 }
 
 // TODO: fields追加できるようにする
-func (l *Logger) Info(msg string) {
+func (l *Logger) Info(msg string) *Logger {
 	l.message = msg
-	l.writer.Write([]byte(l.message))
+	return l.Write()
 }
 
-func (l *Logger) Write(bs []byte) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	fmt.Println("bs", bs)
+func (l *Logger) Write() *Logger {
+	_, err := l.buf.WriteString(l.message)
+	if err != nil {
+		// TODO: エラーハンドリング検討要
+		panic(err)
+	}
 
-	// b := &bytes.Buffer{}
-	result, _ := l.w.Write(bs)
-	fmt.Println("result", result)
-
-	return
+	return l
 }
 
-// func (l *Logger) Sync() error {
-// 	l.mu.Lock()
-// 	defer l.mu.Unlock()
+func (l *Logger) Out() {
+	// TODO: lockするかどうか検討する
+	// l.mu.Lock()
+	// defer l.mu.Unlock()
 
-// 	// b := &bytes.Buffer{}
-// 	// l.Write(b.Bytes())
-// 	// fmt.Println(l.message)
-
-// 	return nil
-// }
+	tmp := l.buf.Bytes()
+	l.w.Write(tmp)
+}

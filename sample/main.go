@@ -1,11 +1,12 @@
 package main
 
 import (
+	"os"
+
 	"github.com/sanoyo/yologger"
 )
 
 func main() {
-	logger := yologger.New("sano", "info")
-	logger.Info("failed to fetch URL")
-	// defer logger.Sync()
+	logger := yologger.New("sano", os.Stdout)
+	logger.Info("failed to fetch URL").Out()
 }
